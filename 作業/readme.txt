@@ -1,1 +1,1 @@
-implement of quick sort and merge sort
+implement of quick median
