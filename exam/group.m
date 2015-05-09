@@ -1,5 +1,4 @@
 function A = group(N)
-
 A = 0:N-1;
 M = N;
 while M>2
@@ -22,5 +21,4 @@ while M>2
     end
     A = B;
 end
-
 end

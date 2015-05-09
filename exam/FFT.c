@@ -4,29 +4,38 @@
 
 void bit_reverse(double *x_r,double *x_i,double *y_r,double *y_i,int N)
 {
-     int i,j,M,t;
+     int i,j,M,t,p;
      
      for(i = 0 ; i < N ; i++)
      {
            t = i;
-           M = N/3;
+           M = N;
            j = 0;
-           while(M >=1)
+           while(M >= 1)
            {
                    if(t/M > 0)
                    {
-                          j = j + (t/M)*N/(3*M);
+                          j = j + (t/M)*N/(p*M);
                           t = t - (t/M)*M;
                    }
-                   M = M/3;
+                   if(M%5 == 0) p = 5;
+                   else
+                   {
+                        if(M%3 == 0) p = 3;
+                        else p = 2;
+                   }
+                   M = M/p;
            }
-           //y[i] = x[j]
+           printf("%d <-> %d\n",i,j);
            //y_r[i] = x_r[j];
            //y_i[i] = x_i[j];
-           printf("%d <->%d\n",i,j);
      }
      
      return;
+}
+void FFT(double *x_r,double *x_i,double *y_r,double *y_i,int N)
+{
+     
 }
 int main()
 {
@@ -44,14 +53,14 @@ int main()
     y_r = (double *) malloc (N*sizeof(double));
     y_i = (double *) malloc (N*sizeof(double));
     
-    for(k = 0 ; k < N ; k++)
+    /*for(k = 0 ; k < N ; k++)
     {
           *(x_r+k) = k;
           *(x_i+k) = 0;
           printf("x_%d = %f + %f i\n",k,*(x_r+k),*(x_i+k));
     }
     system("pause");
-    
+    */
     bit_reverse(x_r,x_i,y_r,y_i,N);
     
     system("pause");
