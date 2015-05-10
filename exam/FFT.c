@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 void bit_reverse(double *x_r,double *x_i,double *y_r,double *y_i,int N)
 {
@@ -29,7 +30,6 @@ void bit_reverse(double *x_r,double *x_i,double *y_r,double *y_i,int N)
            //printf("%d <-> %d\n",i,j);
            y_r[i] = x_r[j];
            y_i[i] = x_i[j];
-           printf("%d: %f + %f\n",i,y_r[i],y_i[i]);
      }
      
      return;
@@ -58,13 +58,6 @@ void FFT(double *x_r,double *x_i,double *y_r,double *y_i,int N)
                    {
                          w_r = cos(j*theta);
                          w_i = sin(j*theta);
-                         printf("theta = %f , w = %f + %f \n",theta,w_r,w_i);
-                         //for(k = 0 ; k < p ; k++) printf("%d ",j+k*i+t);
-                         /*
-                         p = 5 -> y'[j+t] = y[j+t] + w*y[j+i+t] + w^2*y[j+2i+t] + w^3*y[j+3i+t] + w^4*y[j+4i+t]
-                                  y'[j+i+t] = y[j+t] + w5*w*y[j+i+t] + w5^2*w^2*y[j+2i+t] + w5^3*w^3*y[j+3i+t] + w5^4*w^4*y[j+4i+t]
-                                  ...
-                         */
                          switch(p)
                          {
                                   case 2:
@@ -112,7 +105,6 @@ void FFT(double *x_r,double *x_i,double *y_r,double *y_i,int N)
                    t = t + p*i;
            }
            M = M/p;
-           for(k = 0 ; k < N ; k++) printf("y_%d : %f + %f i\n",k,y_r[k],y_i[k]);
      }
      
      
@@ -122,6 +114,7 @@ int main()
 {
     double *x_r,*x_i,*y_r,*y_i;
     int k,n,p,q,r,N = 1;
+    clock_t t1, t2;
     
     printf("p,q,r = ");
     scanf("%d %d %d",&p,&q,&r);
@@ -138,11 +131,14 @@ int main()
     {
           *(x_r+k) = k;
           *(x_i+k) = 0;
-          printf("x_%d = %f + %f i\n",k,*(x_r+k),*(x_i+k));
+          //printf("x_%d = %f + %f i\n",k,*(x_r+k),*(x_i+k));
     }
     system("pause");
     
+    t1 = clock();
     FFT(x_r,x_i,y_r,y_i,N);
+    t2 = clock();
+    printf("Fast FT: %f secs\n", 1.0*(t2-t1)/CLOCKS_PER_SEC);
     //for(k = 0 ; k < N ; k++) printf("y_%d : %f + %f i\n",k,y_r[k],y_i[k]);
     
     free(x_r);
