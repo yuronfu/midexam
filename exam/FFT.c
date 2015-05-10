@@ -90,12 +90,21 @@ void FFT(double *x_r,double *x_i,double *y_r,double *y_i,int N)
                                   case 5:
                                        temp_r[0] = w_r*y_r[j+i+t] - w_i*y_i[j+i+t];
                                        temp_i[0] = w_i*y_r[j+i+t] + w_r*y_i[j+i+t];
-                                       for(k = 1 ; k < p ; k++)
+                                       for(k = 2 ; k < 5 ; k++)
                                        {
-                                             temp_r[k] = cos(j*k*theta)*y_r[j+k*i+t] - sin(j*k*theta)*y_i[j+k*i+t];
-                                             temp_i[k] = sin(j*k*theta)*y_r[j+k*i+t] + cos(j*k*theta)*y_i[j+k*i+t];
+                                             temp_r[k-1] = cos(j*k*theta)*y_r[j+k*i+t] - sin(j*k*theta)*y_i[j+k*i+t];
+                                             temp_i[k-1] = sin(j*k*theta)*y_r[j+k*i+t] + cos(j*k*theta)*y_i[j+k*i+t];
                                        }
-                                       
+                                       y_r[j+4*i+t] = y_r[j+t] + 0.30901699*(temp_r[0]+temp_r[3]) - 0.95105652*(temp_i[0]-temp_i[3]) - 0.80901699*(temp_r[1]+temp_r[2]) - 0.58778525*(temp_i[1]-temp_i[2]);
+                                       y_i[j+4*i+t] = y_i[j+t] + 0.30901699*(temp_i[0]+temp_i[3]) + 0.95105652*(temp_r[0]-temp_r[3]) - 0.80901699*(temp_i[1]+temp_i[2]) + 0.58778525*(temp_r[1]-temp_r[2]);
+                                       y_r[j+3*i+t] = y_r[j+t] - 0.80901699*(temp_r[0]+temp_r[3]) - 0.58778525*(temp_i[0]-temp_i[3]) + 0.30901699*(temp_r[1]+temp_r[2]) + 0.95105652*(temp_i[1]-temp_i[2]);
+                                       y_i[j+3*i+t] = y_i[j+t] - 0.80901699*(temp_i[0]+temp_i[3]) + 0.58778525*(temp_r[0]-temp_r[3]) + 0.30901699*(temp_i[1]+temp_i[2]) - 0.95105652*(temp_r[1]-temp_r[2]);
+                                       y_r[j+2*i+t] = y_r[j+t] - 0.80901699*(temp_r[0]+temp_r[3]) + 0.58778525*(temp_i[0]-temp_i[3]) + 0.30901699*(temp_r[1]+temp_r[2]) - 0.95105652*(temp_i[1]-temp_i[2]);
+                                       y_i[j+2*i+t] = y_i[j+t] - 0.80901699*(temp_i[0]+temp_i[3]) - 0.58778525*(temp_r[0]-temp_r[3]) + 0.30901699*(temp_i[1]+temp_i[2]) + 0.95105652*(temp_r[1]-temp_r[2]);
+                                       y_r[j+i+t] = y_r[j+t] + 0.30901699*(temp_r[0]+temp_r[3]) + 0.95105652*(temp_i[0]-temp_i[3]) - 0.80901699*(temp_r[1]+temp_r[2]) + 0.58778525*(temp_i[1]-temp_i[2]);
+                                       y_i[j+i+t] = y_i[j+t] + 0.30901699*(temp_i[0]+temp_i[3]) - 0.95105652*(temp_r[0]-temp_r[3]) - 0.80901699*(temp_i[1]+temp_i[2]) - 0.58778525*(temp_r[1]-temp_r[2]);
+                                       y_r[j+t] = y_r[j+t] + temp_r[0] + temp_r[1] + temp_r[2] + temp_r[3];
+                                       y_i[j+t] = y_i[j+t] + temp_i[0] + temp_i[1] + temp_i[2] + temp_i[3];
                                        break;
                                        
                          }
