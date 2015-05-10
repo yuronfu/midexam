@@ -1,5 +1,5 @@
-�W�Ҥ��e�갵�G
-�ü�
+﻿上課內容實做：
+亂數
 bubble sort
-�ť߸��ഫ�qSFT �M FFTv1�r
-�ֳt�ť߸��ഫ�qFFTv2�r
+傅立葉轉換〈SFT 和 FFTv1〉
+快速傅立葉轉換〈FFTv2〉
