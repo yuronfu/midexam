@@ -26,20 +26,92 @@ void bit_reverse(double *x_r,double *x_i,double *y_r,double *y_i,int N)
                    }
                    M = M/p;
            }
-           printf("%d <-> %d\n",i,j);
-           //y_r[i] = x_r[j];
-           //y_i[i] = x_i[j];
+           //printf("%d <-> %d\n",i,j);
+           y_r[i] = x_r[j];
+           y_i[i] = x_i[j];
+           printf("%d: %f + %f\n",i,y_r[i],y_i[i]);
      }
      
      return;
 }
 void FFT(double *x_r,double *x_i,double *y_r,double *y_i,int N)
 {
+     int i,j,k,t,p = 2,M = N;
+     double theta,w_r,w_i,temp_r[4],temp_i[4];
      
+     bit_reverse(x_r,x_i,y_r,y_i,N);
+     
+     for(i = 1 ; i < N ; i*=p)
+     {
+           t = 0;
+           
+           if(M%2 == 0) p = 2;
+           else
+           {
+               if(M%3 == 0) p =3;
+               else p = 5;
+           }
+           theta = -2*M_PI/(p*i);
+           while(t < N)
+           {
+                   for(j = 0 ; j < i ; j++)
+                   {
+                         w_r = cos(j*theta);
+                         w_i = sin(j*theta);
+                         printf("theta = %f , w = %f + %f \n",theta,w_r,w_i);
+                         //for(k = 0 ; k < p ; k++) printf("%d ",j+k*i+t);
+                         /*
+                         p = 5 -> y'[j+t] = y[j+t] + w*y[j+i+t] + w^2*y[j+2i+t] + w^3*y[j+3i+t] + w^4*y[j+4i+t]
+                                  y'[j+i+t] = y[j+t] + w5*w*y[j+i+t] + w5^2*w^2*y[j+2i+t] + w5^3*w^3*y[j+3i+t] + w5^4*w^4*y[j+4i+t]
+                                  ...
+                         */
+                         switch(p)
+                         {
+                                  case 2:
+                                       temp_r[0] = w_r*y_r[j+i+t] - w_i*y_i[j+i+t];
+                                       temp_i[0] = w_i*y_r[j+i+t] + w_r*y_i[j+i+t];
+                                       y_r[j+i+t] = y_r[j+t] - temp_r[0];
+                                       y_i[j+i+t] = y_i[j+t] - temp_i[0];
+                                       y_r[j+t]+=temp_r[0];
+                                       y_i[j+t]+=temp_i[0];
+                                       break;
+                                  case 3:
+                                       temp_r[0] = w_r*y_r[j+i+t] - w_i*y_i[j+i+t];
+                                       temp_i[0] = w_i*y_r[j+i+t] + w_r*y_i[j+i+t];
+                                       temp_r[1] = (w_r*w_r - w_i*w_i)*y_r[j+2*i+t] - 2*w_r*w_i*y_i[j+2*i+t];
+                                       temp_i[1] = 2*w_r*w_i*y_r[j+2*i+t] + (w_r*w_r - w_i*w_i)*y_i[j+i+t];
+                                       y_r[j+2*i+t] = y_r[j+t] - 0.5*(temp_r[0] + temp_r[1]) - 0.8660254*(temp_i[0] - temp_i[1]);
+                                       y_i[j+2*i+t] = y_i[j+t] - 0.5*(temp_i[0] + temp_i[1]) + 0.8660254*(temp_r[0] - temp_r[1]);
+                                       y_r[j+i+t] = y_r[j+t] - 0.5*(temp_r[0] + temp_r[1]) + 0.8660254*(temp_i[0] - temp_i[1]);
+                                       y_i[j+i+t] = y_i[j+t] - 0.5*(temp_i[0] + temp_i[1]) - 0.8660254*(temp_r[0] - temp_r[1]);
+                                       y_r[j+t] = y_r[j+t] + temp_r[0] + temp_r[1];
+                                       y_i[j+t] = y_i[j+t] + temp_i[0] + temp_i[1];
+                                       break;
+                                  case 5:
+                                       temp_r[0] = w_r*y_r[j+i+t] - w_i*y_i[j+i+t];
+                                       temp_i[0] = w_i*y_r[j+i+t] + w_r*y_i[j+i+t];
+                                       for(k = 1 ; k < p ; k++)
+                                       {
+                                             temp_r[k] = cos(j*k*theta)*y_r[j+k*i+t] - sin(j*k*theta)*y_i[j+k*i+t];
+                                             temp_i[k] = sin(j*k*theta)*y_r[j+k*i+t] + cos(j*k*theta)*y_i[j+k*i+t];
+                                       }
+                                       
+                                       break;
+                                       
+                         }
+                   }
+                   t = t + p*i;
+           }
+           M = M/p;
+           for(k = 0 ; k < N ; k++) printf("y_%d : %f + %f i\n",k,y_r[k],y_i[k]);
+     }
+     
+     
+     return;
 }
 int main()
 {
-    double *x_r,*x_i,*y_r,*y_i,w_r,w_i;
+    double *x_r,*x_i,*y_r,*y_i;
     int k,n,p,q,r,N = 1;
     
     printf("p,q,r = ");
@@ -53,16 +125,21 @@ int main()
     y_r = (double *) malloc (N*sizeof(double));
     y_i = (double *) malloc (N*sizeof(double));
     
-    /*for(k = 0 ; k < N ; k++)
+    for(k = 0 ; k < N ; k++)
     {
           *(x_r+k) = k;
           *(x_i+k) = 0;
           printf("x_%d = %f + %f i\n",k,*(x_r+k),*(x_i+k));
     }
     system("pause");
-    */
-    bit_reverse(x_r,x_i,y_r,y_i,N);
     
+    FFT(x_r,x_i,y_r,y_i,N);
+    //for(k = 0 ; k < N ; k++) printf("y_%d : %f + %f i\n",k,y_r[k],y_i[k]);
+    
+    free(x_r);
+    free(x_i);
+    free(y_r);
+    free(y_i);
     system("pause");
     return 0;
 }
