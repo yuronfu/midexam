@@ -118,7 +118,10 @@ int main()
     
     printf("p,q,r = ");
     scanf("%d %d %d",&p,&q,&r);
-    N = pow(2,p)*pow(3,q)*pow(5,r);
+    for(k = 0 ; k < p ; k++) N*=2;
+    for(k = 0 ; k < q ; k++) N*=3;
+    for(k = 0 ; k < r ; k++) N*=5;
+    
     printf("N = %d\n",N);
     
     x_r = (double *) malloc (N*sizeof(double));
