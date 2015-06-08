@@ -72,7 +72,7 @@ void FFT(double *x_r,double *x_i,double *y_r,double *y_i,int N)
                                        temp_r[0] = w_r*y_r[j+i+t] - w_i*y_i[j+i+t];
                                        temp_i[0] = w_i*y_r[j+i+t] + w_r*y_i[j+i+t];
                                        temp_r[1] = (w_r*w_r - w_i*w_i)*y_r[j+2*i+t] - 2*w_r*w_i*y_i[j+2*i+t];
-                                       temp_i[1] = 2*w_r*w_i*y_r[j+2*i+t] + (w_r*w_r - w_i*w_i)*y_i[j+i+t];
+                                       temp_i[1] = 2*w_r*w_i*y_r[j+2*i+t] + (w_r*w_r - w_i*w_i)*y_i[j+2*i+t];
                                        y_r[j+2*i+t] = y_r[j+t] - 0.5*(temp_r[0] + temp_r[1]) - 0.86602540378443864676372317075294*(temp_i[0] - temp_i[1]);
                                        y_i[j+2*i+t] = y_i[j+t] - 0.5*(temp_i[0] + temp_i[1]) + 0.86602540378443864676372317075294*(temp_r[0] - temp_r[1]);
                                        y_r[j+i+t] = y_r[j+t] - 0.5*(temp_r[0] + temp_r[1]) + 0.86602540378443864676372317075294*(temp_i[0] - temp_i[1]);
